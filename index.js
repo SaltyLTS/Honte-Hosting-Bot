@@ -25,7 +25,6 @@ const hosts = [
   
   client.once('ready', async () => {
     console.log(`Bot prêt. [PTERO] \nConnecté en tant que ${client.user.tag}`);
-    console.log(`NR`);
     try {
       const channel = client.channels.cache.get(channelId);
   
