@@ -22,7 +22,7 @@ const hosts = [
   ];
 
   const channelId = '1178109401056423947';
-  
+
   client.once('ready', async () => {
     console.log(`Bot prêt. [PTERO] \nConnecté en tant que ${client.user.tag}`);
     try {
@@ -63,11 +63,6 @@ const hosts = [
         }
   
         embed.setDescription(mainDescription);
-<<<<<<< HEAD
-  
-=======
-
->>>>>>> 3ebf819a6556940f5bf3ac38fdce2b4b559f66dd
         const nodes = hosts.slice(4, 5);
         const databases = hosts.slice(5, 6);
   
