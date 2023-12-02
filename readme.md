@@ -1,11 +1,15 @@
-# Honte-Hosting Discord Bot
+# H-S-BO2-Status
 
 ## Introduction
 This Discord bot provides system status updates for Honte-Hosting services. It uses Discord.js and ping to check the status of specified hosts and displays the information in a Discord channel.
+It also have a server-side management tool
 
 ## Features
 - Auto-updates system status in a Discord channel every 10 seconds.
-- Provides status information for Main, Panel, Dashboard, PhpMyAdmin, Nodes, and Databases.
+- Ticket tools
+- Suggestion channel automation
+- Welcome/Left messages
+- Bot presence
 
 ## Installation
 1. Clone the repository:
@@ -23,11 +27,11 @@ To launch the bot:
 node index.js
 
 Configuration:
-Edit the hosts array to include the hosts you want to monitor.
-Replace channelId with the ID of your Discord channel.
+Edit the config.json file with whatever please you
 
 Dependencies:
 Discord.js
+sequelize
 ping
 dotenv
 
@@ -36,8 +40,3 @@ This project is licensed under the MIT License.
 
 Contributing:
 Feel free to contribute by opening issues or pull requests.
-
-Acknowledgments:
-Discord.js for the Discord API library.
-ping for the ping utility.
-dotenv for loading environment variables.
