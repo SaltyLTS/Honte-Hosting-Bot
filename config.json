@@ -1,0 +1,20 @@
+{
+    "owner_id": "772077547005542450",
+    "HHTickets": {
+        "ticketCategory": "1179550839476605110",
+        "staffRoles": [
+            "1180609399329406986"
+        ]
+    },
+    "HHSuggestions": {
+        "suggestionChannel": "1180521951568085042",
+        "staffRoles": [
+            "1180609367477866637"
+        ]
+    },
+    "HHWelcome": {
+        "welcomeChannel": "1178105401984680016"
+    },
+    "WebhookID": "1180522233505001482",
+    "WebhookToken": "ACf28ObpXpx3hkisFnQ36SvqIcP-tiQWjts_uaeZySlUdm2KMrO4hLTyzbIlV7nGMWzm"
+}

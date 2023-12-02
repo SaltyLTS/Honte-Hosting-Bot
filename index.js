@@ -1,53 +1,84 @@
-const {Client, IntentsBitField, EmbedBuilder} = require('discord.js');
+const {Client, IntentsBitField, EmbedBuilder, Routes, REST} = require('discord.js');
 const ping = require('ping');
 const dotenv = require('dotenv');
+const Sequelize = require('sequelize');
 const client = new Client({
+
 	intents: [
 		IntentsBitField.Flags.Guilds,
 		IntentsBitField.Flags.GuildMembers,
 		IntentsBitField.Flags.GuildMessages,
 		IntentsBitField.Flags.MessageContent,
+    IntentsBitField.Flags.GuildPresences
 	],
 });
 
 dotenv.config();
 
+const HHDatabase = new Sequelize.Sequelize('HH_Bot', 'root', '', {
+  host: 'localhost',
+  dialect: 'sqlite',
+  logging: false,
+  storage: 'HH_Database.db'
+});
+
+module.exports.HHDatabase = HHDatabase;
+
+const { HHTickets } = require('./HHTickets/HHTickets.js');
+
+HHTickets.sync();
+
 const hosts = [
-    'hontehosting.com',
-    'panel.hontehosting.com',
-    'client.hontehosting.com',
-    'pma.hontehosting.com',
-    'fin-1.hontehosting.com',
-    'db-1.hontehosting.com',
-  ];
+  'hontehosting.com',
+  'panel.hontehosting.com',
+  'client.hontehosting.com',
+  'pma.hontehosting.com',
+  'fin-1.hontehosting.com',
+  'db-1.hontehosting.com',
+];
 
-  const channelId = '1180455637025554522';
+const channelId = '1180455637025554522';
 
-  client.once('ready', async () => {
-    console.log(`Bot prêt. [PTERO] \nConnecté en tant que ${client.user.tag}`);
-    try {
-      const channel = client.channels.cache.get(channelId);
-  
-      if (!channel) {
-        console.error(`Channel with ID ${channelId} not found`);
-        return;
+client.once('ready', async () => {
+  console.log(`Bot prêt. [PTERO] \nConnecté en tant que ${client.user.tag}`);
+
+  const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
+
+  (async () => {
+      try {
+          await rest.put(Routes.applicationCommands(client.user.id),
+              { body: client.commands, }
+          );
+
+          console.log("Commandes chargées sans problèmes.");
+      } catch(e) {
+          console.log(e);
       }
-  
-      let sentMessage;
-  
-      setInterval(async () => {
-        try {
-          const embed = new EmbedBuilder()
-            .setColor('Purple')
-            .setTitle(`Honte-Hosting Systems Status`)
-            .setThumbnail(
-              'https://cdn.discordapp.com/icons/1171973658399481866/80b05c8d7ee5db4bb1f8912487a5d5dd.png?size=4096'
-            )
-            .setTimestamp()
-            .setFooter({
-              text: 'Honte-Hosting Bot',
-              iconURL: 'https://cdn.discordapp.com/icons/1171973658399481866/80b05c8d7ee5db4bb1f8912487a5d5dd.png',
-            });
+  })(); 
+
+  try {
+    const channel = client.channels.cache.get(channelId);
+
+    if (!channel) {
+      console.error(`Channel with ID ${channelId} not found`);
+      return;
+    }
+
+    let sentMessage;
+
+    setInterval(async () => {
+      try {
+        const embed = new EmbedBuilder()
+        .setColor('Purple')
+        .setTitle(`Honte-Hosting Systems Status`)
+        .setThumbnail(
+          'https://cdn.discordapp.com/icons/1171973658399481866/80b05c8d7ee5db4bb1f8912487a5d5dd.png?size=4096'
+        )
+        .setTimestamp()
+        .setFooter({
+          text: 'Honte-Hosting Bot',
+          iconURL: 'https://cdn.discordapp.com/icons/1171973658399481866/80b05c8d7ee5db4bb1f8912487a5d5dd.png',
+        });
 
         let mainDescription = '**—————————————————————**\n•  Main | Panel | Dashboard | PhpMyAdmin  •\n\n';
         for (const host of hosts.slice(0, 4)) {
@@ -61,11 +92,11 @@ const hosts = [
             mainDescription += `\`${host}\` - Error while pinging: ${pingError}\n`;
           }
         }
-  
+
         embed.setDescription(mainDescription);
         const nodes = hosts.slice(4, 5);
         const databases = hosts.slice(5, 6);
-  
+
         try {
           const nodeResult = await ping.promise.probe(nodes[0]);
           embed.addFields({
@@ -83,13 +114,13 @@ const hosts = [
             inline: true,
           });
         }
-  
+
         try {
           const dbResult = await ping.promise.probe(databases[0]);
           embed.addFields({
             name: 'Databases',
             value: `**»** [Db-1](https://db-1.hontehosting.com) **-** ${dbResult.alive ? `<a:online:1179082103888040077>` : `<a:offline:1179082137895456820>`} ${
-              dbResult.alive ? `\`(${dbResult.time}ms)\`` : `\`(OFF)\``
+            dbResult.alive ? `\`(${dbResult.time}ms)\`` : `\`(OFF)\``
             }\n`,
             inline: true,
           });
@@ -101,20 +132,80 @@ const hosts = [
             inline: true,
           });
         }
-  
-        if (!sentMessage) {
-            sentMessage = await channel.send({ embeds: [embed] });
+
+        const Embedxdxd = channel.messages.fetch("1180551369141276823").then(lastMessage => {
+
+          if (!lastMessage) {
+            lastMessage = channel.send({ embeds: [embed] });
           } else {
-            await sentMessage.edit({ embeds: [embed] });
+            lastMessage.edit({ embeds: [embed] });
           }
-        } catch (autoEditError) {
-          console.error('Error during auto-edit:', autoEditError);
-        }
-      }, 10000);
-  
-    } catch (error) {
-      console.error('General error:', error);
-    }
-  });
+        });
+      } catch (error) {
+        console.error('General error:', error);
+      }
+    }, 10000);
+  } catch (error) {
+    console.error('General error:', error);
+  }
+});
+
+///////////////////
+//               //
+// HHTickets //
+//               //
+///////////////////
+
+const TicketEmbed     = require('./HHTickets/TicketEmbed.js');
+const TicketMenu      = require('./HHTickets/TicketMenu.js');
+const TicketModal     = require('./HHTickets/TicketModal.js');
+const TicketMessage   = require('./HHTickets/TicketMessage.js');
+const TicketClose     = require('./HHTickets/TicketClose.js');
+const TicketAssistant = require('./HHTickets/TicketAssistant.js');
+const TicketCommands  = require('./HHTickets/TicketCommands.js');
+const tDefineCommands = require('./HHTickets/DefineCommands.js');
+
+client.on(TicketEmbed.EventName,     (...args) => TicketEmbed.startAsync(...args));
+client.on(TicketMenu.EventName,      (...args) => TicketMenu.startAsync(...args));
+client.on(TicketModal.EventName,     (...args) => TicketModal.startAsync(...args));
+client.on(TicketMessage.EventName,   (...args) => TicketMessage.startAsync(...args));
+client.on(TicketClose.EventName,     (...args) => TicketClose.startAsync(...args));
+client.on(TicketAssistant.EventName, (...args) => TicketAssistant.startAsync(...args));
+client.on(TicketCommands.EventName,  (...args) => TicketCommands.startAsync(...args));
+client.on(tDefineCommands.EventName, (...args) => tDefineCommands.startAsync(...args));
+
+///////////////////////
+//                   //
+// HHSuggestions     //
+//                   //
+///////////////////////
+
+const SuggestionCreate  = require('./HHSuggestions/SuggestionCreate.js');
+const SuggestionManager = require('./HHSuggestions/SuggestionManager.js');
+const sDefineCommands   = require('./HHSuggestions/DefineCommands.js');
+
+client.on(SuggestionCreate.EventName,  (...args) => SuggestionCreate.startAsync(...args));
+client.on(SuggestionManager.EventName, (...args) => SuggestionManager.startAsync(...args));
+client.on(sDefineCommands.EventName,   (...args) => sDefineCommands.startAsync(...args));
+
+///////////////////
+//               //
+// HHWelcome     //
+//               //
+///////////////////
+
+const WelcomeMessage = require('./HHWelcome/WelcomeMessage.js');
+client.on(WelcomeMessage.EventName, (...args) => WelcomeMessage.startAsync(...args));
+const LeftMessage = require('./HHWelcome/LeftMessage.js');
+client.on(LeftMessage.EventName, (...args) => LeftMessage.startAsync(...args));
+
+//////////////////
+//              //
+// HHStatus     //
+//              //
+//////////////////
+
+const StatusPresence = require('./HHStatus/StatusPresence.js');
+client.on(StatusPresence.EventName, (...args) => StatusPresence.startAsync(...args));
 
 client.login(process.env.TOKEN);

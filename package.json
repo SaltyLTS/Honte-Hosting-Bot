@@ -2,6 +2,9 @@
   "dependencies": {
     "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
-    "ping": "^0.4.4"
+    "fs": "^0.0.1-security",
+    "ping": "^0.4.4",
+    "sequelize": "^6.35.1",
+    "sqlite3": "^5.1.6"
   }
 }
