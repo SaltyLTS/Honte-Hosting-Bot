@@ -21,7 +21,7 @@ const hosts = [
     'db-1.hontehosting.com',
   ];
 
-  const channelId = '1178109401056423947';
+  const channelId = '1180455637025554522';
 
   client.once('ready', async () => {
     console.log(`Bot prêt. [PTERO] \nConnecté en tant que ${client.user.tag}`);
