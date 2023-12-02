@@ -10,7 +10,7 @@ This Discord bot provides system status updates for Honte-Hosting services. It u
 ## Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/your-repo.git
+   git clone https://github.com/SaltyLTS/Honte-Hosting-Bot.git
    cd your-repo
 
 Install dependencies:
