@@ -21,7 +21,7 @@ const hosts = [
     'db-1.hontehosting.com',
   ];
 
-  const channelId = '1178103564778881176'; // Replace with your channel ID
+  const channelId = '1178103564778881176';
   
   client.once('ready', async () => {
     console.log(`Bot prêt. [PTERO] \nConnecté en tant que ${client.user.tag}`);
@@ -35,7 +35,6 @@ const hosts = [
   
       let sentMessage;
   
-      // Auto-edit the embed every 10 seconds
       setInterval(async () => {
         try {
           const embed = new EmbedBuilder()
@@ -64,8 +63,7 @@ const hosts = [
         }
   
         embed.setDescription(mainDescription);
-  
-        // Additional fields for Nodes and Databases
+
         const nodes = hosts.slice(4, 5);
         const databases = hosts.slice(5, 6);
   
@@ -106,10 +104,8 @@ const hosts = [
         }
   
         if (!sentMessage) {
-            // Send the embed initially
             sentMessage = await channel.send({ embeds: [embed] });
           } else {
-            // Edit the existing message with the updated embed
             await sentMessage.edit({ embeds: [embed] });
           }
         } catch (autoEditError) {
