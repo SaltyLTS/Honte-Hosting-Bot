@@ -33,6 +33,7 @@ const hosts = [
   'panel.hontehosting.com',
   'client.hontehosting.com',
   'pma.hontehosting.com',
+  'docs.hontehosting.com',
   'fin-1.hontehosting.com',
   'db-1.hontehosting.com',
 ];
@@ -81,7 +82,7 @@ client.once('ready', async () => {
         });
 
         let mainDescription = '**—————————————————————**\n•  Main | Panel | Dashboard | PhpMyAdmin  •\n\n';
-        for (const host of hosts.slice(0, 4)) {
+        for (const host of hosts.slice(0, 5)) {
           try {
             const result = await ping.promise.probe(host);
             mainDescription += `**»** [${host}](https://${host}) **-** ${
@@ -94,8 +95,8 @@ client.once('ready', async () => {
         }
 
         embed.setDescription(mainDescription);
-        const nodes = hosts.slice(4, 5);
-        const databases = hosts.slice(5, 6);
+        const nodes = hosts.slice(5, 6);
+        const databases = hosts.slice(6, 7);
 
         try {
           const nodeResult = await ping.promise.probe(nodes[0]);
