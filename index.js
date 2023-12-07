@@ -2,6 +2,7 @@ const {Client, IntentsBitField, EmbedBuilder, Routes, REST} = require('discord.j
 const ping = require('ping');
 const dotenv = require('dotenv');
 const Sequelize = require('sequelize');
+const { fetchAndSendEmails } = require('./HHMail/mail');
 const client = new Client({
 
 	intents: [
@@ -14,6 +15,14 @@ const client = new Client({
 });
 
 dotenv.config();
+
+const imapConfig = {
+  user: process.env.MAILUSER,
+  password: process.env.MAILPASS, 
+  host: process.env.MAILHOST,
+  port: process.env.MAILPORT,
+  tls: process.env.TLS,
+};
 
 const HHDatabase = new Sequelize.Sequelize('HH_Bot', 'root', '', {
   host: 'localhost',
@@ -38,7 +47,7 @@ const hosts = [
   'db-1.hontehosting.com',
 ];
 
-const channelId = '1180455637025554522';
+const channelId = process.env.CHANNELID;
 
 client.once('ready', async () => {
   console.log(`Bot prêt. [PTERO] \nConnecté en tant que ${client.user.tag}`);
@@ -146,6 +155,11 @@ client.once('ready', async () => {
         console.error('General error:', error);
       }
     }, 10000);
+
+    setInterval(() => {
+      fetchAndSendEmails(imapConfig, process.env.WEBHOOK);
+    }, 300000);
+    
   } catch (error) {
     console.error('General error:', error);
   }
