@@ -222,5 +222,8 @@ client.on(LeftMessage.EventName, (...args) => LeftMessage.startAsync(...args));
 
 const StatusPresence = require('./HHStatus/StatusPresence.js');
 client.on(StatusPresence.EventName, (...args) => StatusPresence.startAsync(...args));
+const StatsDocks = require('./HHStatus/StatsDocks.js');
+client.on(StatsDocks.EventName, (...args) => StatsDocks.startAsync(...args));
+
 
 client.login(process.env.TOKEN);
