@@ -38,7 +38,7 @@ async function fetchAndSendEmails(imapConfig) {
           return;
         }
 
-        console.log('Fetched Email IDs:', results);
+        //console.log('Fetched Email IDs:', results);
 
         processedEmails = processedEmails.filter((emailId) => results.includes(emailId));
 
