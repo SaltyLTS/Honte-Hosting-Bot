@@ -6,10 +6,10 @@ module.exports = {
         setInterval (() => {
             const guild = client.guilds.cache.get(process.env.GUILDID)
             const membres = guild.memberCount;
-            const offline = guild.members.cache.filter(member => member.presence?.status === "offline");
-            const online = guild.members.cache.filter(member => member.presence?.status === "online");
-            const dnd = guild.members.cache.filter(member => member.presence?.status === 'dnd');
-            const idle = guild.members.cache.filter(member => member.presence?.status === 'idle');
+            const offline = guild.members.cache.filter(member => member.presence?.status == "offline");
+            const online = guild.members.cache.filter(member => member.presence?.status == "online");
+            const dnd = guild.members.cache.filter(member => member.presence?.status == 'dnd');
+            const idle = guild.members.cache.filter(member => member.presence?.status == 'idle');
 
             if(guild) {
                 guild.channels.cache.get('1180604259465699348').edit({name: `👥 Members: ${membres}`})
