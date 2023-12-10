@@ -26,7 +26,7 @@ module.exports = {
                         }).catch(() => {
                             interaction.reply({ content: `<@${interaction.member.user.id}> This suggestion doesn't exist.`, ephemeral: true })
                         });
-                        break;
+                    break;
                     case "refuse":
                         await interaction.guild.channels.cache.get(config['HHSuggestions']['suggestionChannel']).messages.fetch(interaction.options.getString('message_id')).then(i => {
                             i.delete().then(() => {
@@ -39,7 +39,7 @@ module.exports = {
                         }).catch(() => {
                             interaction.reply({ content: `<@${interaction.member.user.id}> This suggestion doesn't exist.`, ephemeral: true })
                         });
-                        break;
+                    break;
                 };
             };
         };

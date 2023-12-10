@@ -1,14 +1,17 @@
-const {Client, IntentsBitField, EmbedBuilder, Routes, REST} = require('discord.js');
+const { IntentsBitField, EmbedBuilder, Routes, REST } = require('discord.js');
+const Discord = require('discord.js');
 const ping = require('ping');
 const dotenv = require('dotenv');
 const Sequelize = require('sequelize');
 const { fetchAndSendEmails } = require('./HHMail/mail');
-const client = new Client({
+const fs = require("fs");
+const client = new Discord.Client({
 
 	intents: [
 		IntentsBitField.Flags.Guilds,
 		IntentsBitField.Flags.GuildMembers,
 		IntentsBitField.Flags.GuildMessages,
+    IntentsBitField.Flags.GuildMessageReactions,
 		IntentsBitField.Flags.MessageContent,
     IntentsBitField.Flags.GuildPresences
 	],
@@ -210,8 +213,9 @@ client.on(sDefineCommands.EventName,   (...args) => sDefineCommands.startAsync(.
 ///////////////////
 
 const WelcomeMessage = require('./HHWelcome/WelcomeMessage.js');
-client.on(WelcomeMessage.EventName, (...args) => WelcomeMessage.startAsync(...args));
 const LeftMessage = require('./HHWelcome/LeftMessage.js');
+
+client.on(WelcomeMessage.EventName, (...args) => WelcomeMessage.startAsync(...args));
 client.on(LeftMessage.EventName, (...args) => LeftMessage.startAsync(...args));
 
 //////////////////
@@ -221,9 +225,73 @@ client.on(LeftMessage.EventName, (...args) => LeftMessage.startAsync(...args));
 //////////////////
 
 const StatusPresence = require('./HHStatus/StatusPresence.js');
-client.on(StatusPresence.EventName, (...args) => StatusPresence.startAsync(...args));
 const StatsDocks = require('./HHStatus/StatsDocks.js');
+
+client.on(StatusPresence.EventName, (...args) => StatusPresence.startAsync(...args));
 client.on(StatsDocks.EventName, (...args) => StatsDocks.startAsync(...args));
+
+//////////////////
+//              //
+// HHGiveaways  //
+//              //
+//////////////////
+
+const config = process.env
+client.config = config;
+
+const { GiveawaysManager } = require('discord-giveaways');
+client.giveawaysManager = new GiveawaysManager(client, {
+  storage: "./giveaways.json",
+  default: {
+    botsCanWin: false,
+    embedColor: "Random",
+    reaction: "🎉",
+    embedColorEnd: "Random",
+    lastChance: {
+      enabled: true,
+      content: '⚠️ **LAST CHANCE TO ENTER !** ⚠️',
+      threshold: 10000,
+      embedColor: "Random"
+    }
+  }
+});
+
+client.giveawaysManager.on("giveawayReactionAdded", (giveaway, member, reaction) => {
+  console.log(`${member.user.tag} entered giveaway #${giveaway.messageId} (${reaction.emoji.name})`);
+});
+
+client.giveawaysManager.on("giveawayReactionRemoved", (giveaway, member, reaction) => {
+  console.log(`${member.user.tag} unreact to giveaway #${giveaway.messageId} (${reaction.emoji.name})`);
+});
+
+client.giveawaysManager.on("giveawayEnded", (giveaway, winners) => {
+  console.log(`Giveaway #${giveaway.messageId} ended! Winners: ${winners.map((member) => member.user.username).join(', ')}`);
+});
+
+client.commands = new Discord.Collection();
+fs.readdir("./HHGiveaway/commands-giveaways", (_err, files) => {
+    files.forEach((file) => {
+        if (!file.endsWith(".js")) return;
+        let props = require(`./HHGiveaway/commands-giveaways/${file}`);
+        let commandName = file.split(".")[0];
+        client.commands.set(commandName, {
+            name: commandName,
+            ...props
+        });
+        console.log(`👌 Command loaded: ${commandName}`);
+    });
+});
+
+fs.readdir("./HHGiveaway/events/", (_err, files) => {
+    files.forEach((file) => {
+        if (!file.endsWith(".js")) return;
+        const event = require(`./HHGiveaway/events/${file}`);
+        let eventName = file.split(".")[0];
+        console.log(`👌 Event loaded: ${eventName}`);
+        client.on(eventName, event.bind(null, client));
+        delete require.cache[require.resolve(`./HHGiveaway/events/${file}`)];
+    });
+});
 
 
 client.login(process.env.TOKEN);
