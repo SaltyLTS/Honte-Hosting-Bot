@@ -98,7 +98,7 @@ client.once('ready', async () => {
           try {
             const result = await ping.promise.probe(host);
             mainDescription += `**»** [${host}](https://${host}) **-** ${
-              result.alive ? `<a:online:1179082103888040077>` : `<a:offline:1179082137895456820>`
+              result.alive ? `<a:online:1183887893371027487>` : `<a:offline:1183887891940786278>`
             } ${result.alive ? `\`(${result.time}ms)\`` : `\`(OFF)\``}\n`;
           } catch (pingError) {
             console.error(`Error while pinging ${host}:`, pingError);
@@ -114,7 +114,7 @@ client.once('ready', async () => {
           const nodeResult = await ping.promise.probe(nodes[0]);
           embed.addFields({
             name: 'Nodes',
-            value: `**»** [Fin-1](https://fin-1.hontehosting.com) **-** ${nodeResult.alive ? `<a:online:1179082103888040077>` : `<a:offline:1179082137895456820>`} ${
+            value: `**»** [Fin-1](https://fin-1.hontehosting.com) **-** ${nodeResult.alive ? `<a:online:1183887893371027487>` : `<a:offline:1183887891940786278>`} ${
               nodeResult.alive ? `\`(${nodeResult.time}ms)\`` : `\`(OFF)\``
             }\n`,
             inline: true,
@@ -132,7 +132,7 @@ client.once('ready', async () => {
           const dbResult = await ping.promise.probe(databases[0]);
           embed.addFields({
             name: 'Databases',
-            value: `**»** [Db-1](https://db-1.hontehosting.com) **-** ${dbResult.alive ? `<a:online:1179082103888040077>` : `<a:offline:1179082137895456820>`} ${
+            value: `**»** [Db-1](https://db-1.hontehosting.com) **-** ${dbResult.alive ? `<a:online:1183887893371027487>` : `<a:offline:1183887891940786278>`} ${
             dbResult.alive ? `\`(${dbResult.time}ms)\`` : `\`(OFF)\``
             }\n`,
             inline: true,
