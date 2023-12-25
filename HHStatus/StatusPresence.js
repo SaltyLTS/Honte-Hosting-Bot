@@ -6,15 +6,15 @@ module.exports = {
         updateStatus(client);
         setInterval(() => {
             updateStatus(client);
-        }, 180000);
+        }, 600000);
     },
 };
 
 function updateStatus(client) {
     const statusMessages = [
-        'Future best WW hosting !',
-        'Opening soon !',
-        'I love you guys :3',
+        '🌐 Future best WW hosting !',
+        '🚪 Opening next year! (fun joke)',
+        '🎅 All i want for christmas is you :3',
     ];
 
     const randomStatus = statusMessages[Math.floor(Math.random() * statusMessages.length)];
