@@ -12,9 +12,9 @@ module.exports = {
 
 function updateStatus(client) {
     const statusMessages = [
-        '🌐 Future best WW hosting !',
-        '🚪 Opening next year! (fun joke)',
-        '🎅 All i want for christmas is you :3',
+        `🌐 Future best WW hosting !`,
+        `🚪 Opening next year! (fun joke)`,
+        `❤️ I'm secretly in love with someone here...`,
     ];
 
     const randomStatus = statusMessages[Math.floor(Math.random() * statusMessages.length)];
