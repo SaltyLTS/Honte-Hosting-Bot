@@ -1,20 +1,13 @@
 const { IntentsBitField, EmbedBuilder, Routes, REST } = require('discord.js');
-const Discord = require('discord.js');
+const { Client, Partials, Collection } = require('discord.js');
 const ping = require('ping');
 const dotenv = require('dotenv');
 const Sequelize = require('sequelize');
 const { fetchAndSendEmails } = require('./HHMail/mail');
 const fs = require("fs");
-const client = new Discord.Client({
-
-	intents: [
-		IntentsBitField.Flags.Guilds,
-		IntentsBitField.Flags.GuildMembers,
-		IntentsBitField.Flags.GuildMessages,
-    IntentsBitField.Flags.GuildMessageReactions,
-		IntentsBitField.Flags.MessageContent,
-    IntentsBitField.Flags.GuildPresences
-	],
+const client = new Client({
+	intents: 3276799,
+  partials: [ Partials.Message, Partials.Channel, Partials.Reaction ]
 });
 
 dotenv.config();
@@ -268,30 +261,38 @@ client.giveawaysManager.on("giveawayEnded", (giveaway, winners) => {
   console.log(`Giveaway #${giveaway.messageId} ended! Winners: ${winners.map((member) => member.user.username).join(', ')}`);
 });
 
-client.commands = new Discord.Collection();
+client.commands = new Collection();
 fs.readdir("./HHGiveaway/commands-giveaways", (_err, files) => {
-    files.forEach((file) => {
-        if (!file.endsWith(".js")) return;
-        let props = require(`./HHGiveaway/commands-giveaways/${file}`);
-        let commandName = file.split(".")[0];
-        client.commands.set(commandName, {
-            name: commandName,
-            ...props
-        });
-        console.log(`👌 Command loaded: ${commandName}`);
+  files.forEach((file) => {
+    if (!file.endsWith(".js")) return;
+    let props = require(`./HHGiveaway/commands-giveaways/${file}`);
+    let commandName = file.split(".")[0];
+    client.commands.set(commandName, {
+      name: commandName,
+      ...props
     });
+    console.log(`👌 Command loaded: ${commandName}`);
+  });
 });
 
 fs.readdir("./HHGiveaway/events/", (_err, files) => {
-    files.forEach((file) => {
-        if (!file.endsWith(".js")) return;
-        const event = require(`./HHGiveaway/events/${file}`);
-        let eventName = file.split(".")[0];
-        console.log(`👌 Event loaded: ${eventName}`);
-        client.on(eventName, event.bind(null, client));
-        delete require.cache[require.resolve(`./HHGiveaway/events/${file}`)];
-    });
+  files.forEach((file) => {
+    if (!file.endsWith(".js")) return;
+    const event = require(`./HHGiveaway/events/${file}`);
+    let eventName = file.split(".")[0];
+    console.log(`👌 Event loaded: ${eventName}`);
+    client.on(eventName, event.bind(null, client));
+    delete require.cache[require.resolve(`./HHGiveaway/events/${file}`)];
+  });
 });
 
+//////////////////
+//              //
+// HHEaster     //
+//              //
+//////////////////
+
+const EasterEgg   = require('./HHEaster/EasterEgg.js');
+client.on(EasterEgg.EventName, (...args) => EasterEgg.startAsync(...args));
 
 client.login(process.env.TOKEN);

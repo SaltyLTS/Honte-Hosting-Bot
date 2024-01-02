@@ -14,7 +14,7 @@ module.exports = {
     ],
     
     run: async (client, interaction) => {
-
+        if(!interaction.guild) return interaction.reply('Cette commandes est réalisable uniquement sur un serveur ! !')
         // If the member doesn't have enough permissions
         if(!interaction.member.permissions.has('MANAGE_MESSAGES') && !interaction.member.roles.cache.some((r) => r.name === "Giveaways")){
             return interaction.reply({
